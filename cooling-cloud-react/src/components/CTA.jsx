@@ -75,6 +75,12 @@ function CTA() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="btn-secondary flex items-center justify-center space-x-2"
+                onClick={() => {
+                  const subject = "Consultation Request - Cooling the Cloud Optimization";
+                  const body = "Hi Team,\n\nI'm interested in learning more about your data center optimization solution presented at the 2025 IISE Hackathon.\n\nI would like to schedule a consultation to discuss:\n- Implementation for our data center\n- Cost savings potential\n- Water conservation metrics\n- Timeline for deployment\n\nBest regards,\n[Your Name]";
+                  const emails = "edarasrimaansri@gmail.com,taimur.adam1@gmail.com,aryanas5426@gmail.com";
+                  window.location.href = `mailto:${emails}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                }}
               >
                 <FaCalendar className="w-5 h-5" />
                 <span>Schedule Consultation</span>
@@ -125,16 +131,22 @@ function CTA() {
               <a href="https://github.com/Automynx/Cooling-The-Cloud" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition">
                 GitHub
               </a>
-              <a href="#contact" className="text-white/60 hover:text-white transition">
+              <a
+                href="mailto:edarasrimaansri@gmail.com,taimur.adam1@gmail.com,aryanas5426@gmail.com?subject=Inquiry - Cooling the Cloud Project"
+                className="text-white/60 hover:text-white transition"
+              >
                 Contact
               </a>
             </div>
 
             {/* Contact */}
-            <div className="flex items-center space-x-2 text-white/60">
+            <a
+              href="mailto:edarasrimaansri@gmail.com,taimur.adam1@gmail.com,aryanas5426@gmail.com"
+              className="flex items-center space-x-2 text-white/60 hover:text-white transition"
+            >
               <FaEnvelope className="w-4 h-4" />
               <span>edarasrimaansri@gmail.com</span>
-            </div>
+            </a>
           </div>
         </motion.div>
       </div>

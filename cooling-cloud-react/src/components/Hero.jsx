@@ -116,6 +116,9 @@ function Hero() {
             className="btn-secondary flex items-center justify-center space-x-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             <span>Learn More</span>
             <FaArrowRight className="w-4 h-4" />
