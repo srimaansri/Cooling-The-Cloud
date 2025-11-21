@@ -213,7 +213,8 @@ def run_optimization_with_real_data(conn, target_date=None):
 
     print("🔍 Solving optimization problem...")
     try:
-        results = optimizer.solve(solver_name='glpk')
+        # Try HiGHS first (works better on Windows), then GLPK
+        results = optimizer.solve(solver_name='highs')
 
         # Display results
         print("\n" + "=" * 80)

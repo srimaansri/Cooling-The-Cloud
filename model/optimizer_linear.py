@@ -135,7 +135,7 @@ class LinearDataCenterOptimizer:
         self.model = model
         return model
 
-    def solve(self, solver_name: str = 'glpk') -> Dict:
+    def solve(self, solver_name: str = 'highs') -> Dict:
         """Solve the linear model."""
         if self.model is None:
             raise ValueError("Model not built. Call build_model() first.")
@@ -286,7 +286,7 @@ class LinearDataCenterOptimizer:
                 print("Supabase not configured")
             return None
 
-    def optimize_with_supabase(self, date: Optional[datetime] = None, solver_name: str = 'glpk') -> Dict:
+    def optimize_with_supabase(self, date: Optional[datetime] = None, solver_name: str = 'highs') -> Dict:
         """Run optimization using data from Supabase.
 
         Args:

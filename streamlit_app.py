@@ -275,4 +275,4 @@ else:
 
 # Footer
 st.divider()
-st.markdown("##### 🏆 IISE Hackathon 2024 | Team: Cooling the Cloud | Theme: Electricity in Arizona")
+st.markdown("##### 🏆 IISE Hackathon 2025 | Team: Cooling the Cloud | Theme: Electricity in Arizona")

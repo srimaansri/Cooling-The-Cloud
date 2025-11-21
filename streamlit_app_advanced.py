@@ -148,7 +148,7 @@ if display_mode == "daily":
                         target_date = datetime(2024, 8, 1)
 
                     # Run optimization with Supabase data
-                    results = optimizer.optimize_with_supabase(date=target_date, solver_name='glpk')
+                    results = optimizer.optimize_with_supabase(date=target_date, solver_name='highs')
 
                     if results:
                         st.success("✅ Optimization complete using real data!")
@@ -190,7 +190,7 @@ if display_mode == "daily":
                 optimizer = LinearDataCenterOptimizer(use_supabase=False)
                 optimizer.water_cost_per_gallon = water_cost / 1000
                 model = optimizer.build_model(temperatures, prices)
-                results = optimizer.solve(solver_name='glpk')
+                results = optimizer.solve(solver_name='highs')
 
                 if use_supabase and optimizer.data_interface:
                     # Save demo results to Supabase
