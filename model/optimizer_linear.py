@@ -34,6 +34,9 @@ class LinearDataCenterOptimizer:
                    grid_demand: Optional[List[float]] = None) -> pyo.ConcreteModel:
         """Build simplified linear model."""
 
+        # Store prices for baseline calculation
+        self.electricity_prices = electricity_prices
+
         model = pyo.ConcreteModel()
 
         # Sets
@@ -163,7 +166,9 @@ class LinearDataCenterOptimizer:
             results['hourly_data'].append(hourly)
 
         # Calculate baseline (no optimization)
-        baseline_cost = (self.critical_load_mw + self.flexible_load_mw/3 + self.chiller_energy) * 24 * 70 / 1000
+        # Use actual average price instead of fixed $70
+        avg_price = np.mean(self.electricity_prices) if hasattr(self, 'electricity_prices') else 70
+        baseline_cost = (self.critical_load_mw + self.flexible_load_mw/3 + self.chiller_energy) * 24 * avg_price / 1000
 
         results['summary'] = {
             'total_cost': total_elec_cost + total_water_cost,
