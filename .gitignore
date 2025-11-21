@@ -48,7 +48,6 @@ output/
 results/
 *.log
 *.pdf
-*.html
 
 # IDE
 .vscode/
