@@ -25,22 +25,32 @@ except ImportError:
 class LinearDataCenterOptimizer:
     """Simplified linear optimizer for GLPK compatibility."""
 
-    def __init__(self, use_supabase: bool = True):
+    def __init__(self, use_supabase: bool = True, capacity_mw: float = 2000.0):
         """Initialize with Arizona data center parameters.
 
         Args:
             use_supabase: Whether to use Supabase for data and result storage
+            capacity_mw: Total data center capacity in MW (default: 2000MW for Arizona)
         """
-        self.total_capacity_mw = 50.0
-        self.critical_load_mw = 30.0
-        self.flexible_load_mw = 20.0
-        self.cooling_capacity_mw = 15.0
+        # Store the requested capacity for scaling results
+        self.requested_capacity_mw = capacity_mw
+        self.scale_factor = capacity_mw / 50.0
 
-        # Simplified cooling parameters
+        # Keep the internal model at 50MW scale to avoid numerical issues
+        # We'll scale the results at the end
+        self.total_capacity_mw = 50.0
+        self.critical_load_mw = 30.0  # 60% critical
+        self.flexible_load_mw = 20.0  # 40% flexible
+        self.cooling_capacity_mw = 15.0  # 30% for cooling
+
+        # Simplified cooling parameters at original scale
         self.water_cooling_energy = 7.5  # MW for water cooling
         self.chiller_energy = 18.0  # MW for chiller cooling
-        self.water_usage_per_hour = 120  # gallons/hour when using water
+        self.water_usage_per_hour = 120  # gallons/hour when using water (will scale in results)
         self.water_cost_per_gallon = 0.004
+
+        print(f"Optimizer configured for {self.requested_capacity_mw}MW (using {self.total_capacity_mw}MW model)")
+        print(f"Results will be scaled by factor: {self.scale_factor:.1f}x")
 
         self.model = None
         self.results = None
@@ -158,7 +168,7 @@ class LinearDataCenterOptimizer:
         return {}
 
     def _extract_results(self) -> Dict:
-        """Extract results from solved model."""
+        """Extract results from solved model and scale to requested capacity."""
         results = {
             'hourly_data': [],
             'summary': {},
@@ -183,34 +193,44 @@ class LinearDataCenterOptimizer:
         prices = []
 
         for h in self.model.hours:
+            # Get values from 50MW model
+            batch_load_50mw = pyo.value(self.model.batch_load[h])
+            water_cooling = int(pyo.value(self.model.use_water[h]))
+            total_load_50mw = pyo.value(self.model.total_load[h])
+
+            # Scale power values to requested capacity
+            batch_load_scaled = batch_load_50mw * self.scale_factor
+            total_load_scaled = total_load_50mw * self.scale_factor
+            water_usage_scaled = water_cooling * self.water_usage_per_hour * self.scale_factor
+
             hourly = {
                 'hour': h,
-                'batch_load_mw': pyo.value(self.model.batch_load[h]),
-                'water_cooling': int(pyo.value(self.model.use_water[h])),
-                'total_load_mw': pyo.value(self.model.total_load[h]),
+                'batch_load_mw': batch_load_scaled,
+                'water_cooling': water_cooling,
+                'total_load_mw': total_load_scaled,
                 'electricity_price': pyo.value(self.model.price[h]),
                 'temperature': pyo.value(self.model.temp[h])
             }
 
-            elec_cost = hourly['total_load_mw'] * hourly['electricity_price'] / 1000
-            water_cost = hourly['water_cooling'] * self.water_usage_per_hour * self.water_cost_per_gallon
-            water_usage = hourly['water_cooling'] * self.water_usage_per_hour
+            # Scale costs appropriately
+            elec_cost = total_load_scaled * hourly['electricity_price'] / 1000
+            water_cost = water_usage_scaled * self.water_cost_per_gallon
 
             hourly['electricity_cost'] = elec_cost
             hourly['water_cost'] = water_cost
 
             total_elec_cost += elec_cost
             total_water_cost += water_cost
-            total_water_used += water_usage
-            peak_demand = max(peak_demand, hourly['total_load_mw'])
+            total_water_used += water_usage_scaled
+            peak_demand = max(peak_demand, total_load_scaled)
 
             # Store for arrays
-            results['batch_load'].append(hourly['batch_load_mw'])
-            results['cooling_mode'].append('water' if hourly['water_cooling'] else 'electric')
+            results['batch_load'].append(batch_load_scaled)
+            results['cooling_mode'].append('water' if water_cooling else 'electric')
             temperatures.append(hourly['temperature'])
             prices.append(hourly['electricity_price'])
             results['hourly_costs'].append(elec_cost + water_cost)
-            results['water_usage'].append(water_usage)
+            results['water_usage'].append(water_usage_scaled)
 
             results['hourly_data'].append(hourly)
 
@@ -218,16 +238,21 @@ class LinearDataCenterOptimizer:
         results['temperatures'] = temperatures
         results['electricity_prices'] = prices
 
-        # Calculate baseline (no optimization) using actual average price
+        # Calculate baseline (no optimization) at requested scale
         avg_price = np.mean(self.electricity_prices) if hasattr(self, 'electricity_prices') and self.electricity_prices else 70
-        baseline_cost = (self.critical_load_mw + self.flexible_load_mw/3 + self.chiller_energy) * 24 * avg_price / 1000
+        # Scale baseline components
+        critical_scaled = self.critical_load_mw * self.scale_factor
+        flexible_scaled = self.flexible_load_mw * self.scale_factor
+        chiller_scaled = self.chiller_energy * self.scale_factor
+        baseline_cost = (critical_scaled + flexible_scaled/3 + chiller_scaled) * 24 * avg_price / 1000
 
         results['summary'] = {
             'total_cost': total_elec_cost + total_water_cost,
             'electricity_cost': total_elec_cost,
             'water_cost': total_water_cost,
             'peak_demand_mw': peak_demand,
-            'baseline_cost': baseline_cost
+            'baseline_cost': baseline_cost,
+            'capacity_mw': self.requested_capacity_mw  # Include the actual capacity
         }
 
         results['savings'] = {
@@ -238,12 +263,12 @@ class LinearDataCenterOptimizer:
 
         results['environmental'] = {
             'water_used_gallons': total_water_used,
-            'water_saved_gallons': max(0, 120 * 12 * 24 - total_water_used),
-            'peak_reduction_mw': max(0, 50 - peak_demand),
+            'water_saved_gallons': max(0, self.water_usage_per_hour * self.scale_factor * 12 * 24 - total_water_used),
+            'peak_reduction_mw': max(0, self.requested_capacity_mw - peak_demand),
             'carbon_avoided_tons': results['savings']['daily_savings'] * 0.0004
         }
 
-        # Add metadata for Supabase
+        # Add metadata for Supabase (with scaled values)
         results['total_cost'] = results['summary']['total_cost']
         results['electricity_cost'] = total_elec_cost
         results['water_cost'] = total_water_cost
@@ -252,7 +277,7 @@ class LinearDataCenterOptimizer:
         results['cost_savings_percent'] = results['savings']['percentage_saved']
         results['total_water_gallons'] = total_water_used
         results['peak_demand'] = peak_demand
-        results['average_load'] = sum(results['batch_load']) / len(results['batch_load']) + self.critical_load_mw
+        results['average_load'] = sum(results['batch_load']) / len(results['batch_load']) + critical_scaled
         results['water_saved'] = results['environmental']['water_saved_gallons']
         results['carbon_avoided'] = results['environmental']['carbon_avoided_tons']
         results['max_temp'] = max(temperatures)
