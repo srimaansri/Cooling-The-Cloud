@@ -1,3 +1,4 @@
+python-dotenv>=1.0
 # Core Optimization Libraries
 pyomo>=6.7.0
 gekko>=1.0.6
