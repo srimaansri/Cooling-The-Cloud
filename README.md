@@ -1,5 +1,14 @@
 # Cooling-The-Cloud
 
+The Goal:
+To minimize the total daily operating cost of a Phoenix-based Data Center by optimizing when they consume power and how they cool their servers.
+How it works:
+Our model analyzes hourly Grid Demand (from EIA data) and Outside Temperature (from NOAA data) to make two decisions for every hour of the day:
+Load Shifting: Move flexible computer processing tasks to times when electricity is cheaper.
+Cooling Switching: Switch between Water-based cooling (efficient but uses scarce water) and Electric Chillers (uses no water but high energy) based on the outside heat.
+The Result:
+A schedule that reduces strain on the Arizona power grid during peak hours and conserves water during the hottest parts of the day.
+
 
 Here is the continuation of the strategy, including the specific data set links and how to structure the optimization model to win the "Creativity" and "Model Difficulty" points.
 The Idea: "Cooling the Cloud" (Data Center Load & Cooling Optimization)
@@ -38,3 +47,4 @@ X
 Visuals: You can plot a graph showing how your model "switches" cooling modes exactly when the temperature drops at night, saving money.
 Presentation Title Idea
 "Chill Factor: Optimizing Arizona's Digital Infrastructure for Thermal and Economic Efficiency"
+
