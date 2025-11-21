@@ -1,0 +1,99 @@
+name: Daily Data Fetch
+
+on:
+  schedule:
+    # Run daily at 6 AM UTC (11 PM Arizona time, which doesn't observe DST)
+    - cron: '0 6 * * *'
+  workflow_dispatch:  # Allow manual triggering for testing
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements-actions.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-actions.txt
+
+    - name: Create .env file
+      env:
+        EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
+        PG_HOST: ${{ secrets.PG_HOST }}
+        PG_USER: ${{ secrets.PG_USER }}
+        PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+        PG_DB: ${{ secrets.PG_DB }}
+        PG_PORT: ${{ secrets.PG_PORT }}
+        PG_SSLMODE: ${{ secrets.PG_SSLMODE || 'require' }}
+      run: |
+        cat > .env << EOF
+        EIA_API_KEY=$EIA_API_KEY
+        BLS_API_KEY=$BLS_API_KEY
+        PG_HOST=$PG_HOST
+        PG_USER=$PG_USER
+        PG_PASSWORD=$PG_PASSWORD
+        PG_DB=$PG_DB
+        PG_PORT=$PG_PORT
+        PG_SSLMODE=$PG_SSLMODE
+        EOF
+
+    - name: Fetch EIA Interchange Data (Last 2 Days)
+      run: |
+        echo "Fetching EIA interchange data for the last 2 days..."
+        YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
+        python scripts/fetch_eia.py --start-date "$YESTERDAY" --days 2
+      continue-on-error: true
+
+    - name: Store EIA Data to Database
+      run: |
+        echo "Storing EIA interchange data to Supabase..."
+        YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
+        python data/api/store_to_postgres.py --start-date "$YESTERDAY" --days 2
+      continue-on-error: true
+
+    - name: Fetch EIA Price Data (Current Month)
+      run: |
+        echo "Fetching Arizona electricity prices for current month..."
+        MONTH_START=$(date -d "$(date +%Y-%m-01)" +%Y-%m-%d)
+        python scripts/fetch_prices.py --start-date "$MONTH_START" --days 31
+      continue-on-error: true
+
+    - name: Fetch BLS Water Index (Last 3 Months)
+      run: |
+        echo "Fetching water price index for last 3 months..."
+        THREE_MONTHS_AGO=$(date -d "3 months ago" +%Y-%m-%d)
+        python scripts/fetch_water_index.py --start-date "$THREE_MONTHS_AGO" --days 90
+      continue-on-error: true
+
+    - name: Summary Report
+      if: always()
+      run: |
+        echo "=== Daily Data Fetch Summary ==="
+        echo "Completed at: $(date)"
+        echo "Fetched data for:"
+        echo "- EIA Interchange: Last 2 days"
+        echo "- EIA Prices: Current month"
+        echo "- BLS Water Index: Last 3 months"
+        echo "================================"
+
+    - name: Clean up
+      if: always()
+      run: |
+        rm -f .env
