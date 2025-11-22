@@ -89,21 +89,35 @@ Note: The application includes demo mode with synthetic Phoenix data, so API key
 
 ### Development Mode
 
-#### Start the React Frontend
+#### Quick Start (Demo Mode - No API Keys Required)
+
+**Terminal 1: Start the React Frontend**
 ```bash
 cd cooling-cloud-react
+npm install  # First time only
 npm run dev
 ```
-Access the application at **http://localhost:5173** (or the port shown in terminal)
+Frontend runs on **http://localhost:3000**
 
-#### Start the Backend API (Optional)
+**Terminal 2: Start the Backend API**
+```bash
+# From the root directory
+python3 run_local_api.py
+```
+Backend API runs on **http://localhost:5001**
+
+The application will automatically use realistic demo data for Phoenix data centers. No API keys or database setup required.
+
+#### Full Mode (With Supabase - Optional)
+
+If you want to use live data with Supabase integration:
 ```bash
 # From the root directory
 python api_server.py
 ```
 API server runs on **http://localhost:5000**
 
-Note: The frontend includes a fully functional demo mode that works without the backend server.
+Make sure you have configured the environment variables in `.env` (see Environment Configuration section).
 
 ### Production Build
 
@@ -114,17 +128,41 @@ npm run build
 ```
 Production files are generated in the `dist/` directory.
 
-#### Deploy Frontend
-The React frontend can be deployed to any static hosting service (Vercel, Netlify, GitHub Pages).
+#### Deploy to Vercel (Recommended)
 
-#### Deploy Backend
-The Python backend requires a platform that supports binary dependencies:
+The entire application (frontend + backend demo API) is configured for one-click Vercel deployment:
+
+```bash
+# Push to GitHub
+git add .
+git commit -m "Deploy to Vercel"
+git push origin main
+
+# Deploy via Vercel CLI or connect GitHub repo to Vercel
+```
+
+The Vercel deployment includes:
+- React frontend (static site)
+- Python serverless API with demo data (`api/index.py`)
+- Automatic fallback to static demo data if API fails
+- No database or API keys required
+
+**What works on Vercel:**
+- ✅ Full frontend with interactive dashboard
+- ✅ Demo optimization with realistic Phoenix data
+- ✅ All API endpoints with synthetic data
+- ✅ Visualizations and statistics
+- ❌ Live Supabase data (requires separate backend)
+
+#### Deploy Backend with Supabase (Optional)
+
+For full functionality with live data, deploy the main backend (`api_server.py`) to:
 - **Railway** (recommended)
 - **Render**
 - **Fly.io**
 - **AWS EC2/Lambda with layers**
 
-Note: Vercel cannot run the backend due to GLPK solver binary requirements.
+Then update the React frontend's API URL to point to your backend deployment.
 
 ## Project Structure
 
@@ -138,12 +176,20 @@ Cooling-The-Cloud/
 │   ├── src/
 │   │   ├── components/         # React components
 │   │   ├── pages/              # Page components
+│   │   ├── services/api.js     # API client with fallback
 │   │   └── App.jsx             # Main application
+│   ├── public/
+│   │   └── demo-data.json      # Static demo data fallback
 │   └── package.json
+├── api/                        # Vercel serverless API
+│   ├── index.py                # Demo API endpoints (no DB required)
+│   └── requirements.txt        # API dependencies
 ├── data/                       # Sample data files
-├── api_server.py               # Flask REST API
+├── api_server.py               # Full Flask REST API (with Supabase)
+├── run_local_api.py            # Local development API server
 ├── main.py                     # CLI optimizer
 ├── test_linear.py              # Optimization tests
+├── vercel.json                 # Vercel deployment config
 └── requirements.txt            # Python dependencies
 ```
 
@@ -170,13 +216,51 @@ python test_linear.py
 ### Access the Interactive Dashboard
 Open the React frontend and navigate to the "Live Demo" page for real-time parameter adjustments and visualizations.
 
+### Test API Endpoints
+```bash
+# Health check
+curl http://localhost:5001/api/health
+
+# Get system stats
+curl http://localhost:5001/api/stats
+
+# Run optimization
+curl -X POST http://localhost:5001/api/optimize
+
+# Get optimization history
+curl http://localhost:5001/api/history?limit=10
+
+# Get real-time data
+curl http://localhost:5001/api/real-time-data
+```
+
+## Available API Endpoints
+
+The demo API (`api/index.py`) provides the following endpoints with realistic Phoenix data:
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check - returns API status |
+| `/api/optimize` | POST | Run optimization with demo data |
+| `/api/stats` | GET | System statistics and current status |
+| `/api/history` | GET | Historical optimization results |
+| `/api/period-summary` | GET | Period summary (default 30 days) |
+| `/api/monthly-breakdown` | GET | Monthly cost/savings breakdown |
+| `/api/daily-trends` | GET | Daily trend analytics |
+| `/api/real-time-data` | GET | Real-time monitoring data (24h) |
+
+All endpoints return realistic demo data without requiring database connections or API keys.
+
 ## Key Features
 
+- **Demo Mode Ready**: Works out-of-the-box with realistic Phoenix data - no API keys or database setup required
 - **Dynamic Load Shifting**: Automatically moves 800MW of flexible workload to off-peak hours
 - **Adaptive Cooling**: Switches between water and electric cooling based on temperature and electricity prices
-- **Real-time Optimization**: Uses actual EIA grid data and NOAA weather forecasts
-- **Interactive Dashboard**: Visualize cost savings, water conservation, and load profiles
+- **Dual Optimization Modes**: Demo mode with synthetic data OR live mode with EIA grid data and NOAA weather forecasts
+- **Interactive Dashboard**: Visualize cost savings, water conservation, and load profiles in real-time
+- **Resilient Frontend**: Automatic fallback to static demo data if API is unavailable
 - **Scalable Architecture**: Supports data centers from 50MW to 2000MW+
+- **One-Click Deployment**: Fully configured for Vercel with serverless Python API
 
 ## Performance Metrics
 
@@ -189,6 +273,18 @@ Based on a 2000MW Arizona data center:
 
 ## Troubleshooting
 
+### Network Error When Running Demo
+
+**Problem**: Getting network errors when trying to run optimization on deployed site or locally.
+
+**Solution**:
+1. **Vercel Deployment**: Make sure you've pushed the latest changes including `api/index.py`, `vercel.json`, and `demo-data.json`
+2. **Local Development**: Ensure both servers are running:
+   - Frontend: `npm run dev` in `cooling-cloud-react/` (port 3000)
+   - Backend: `python3 run_local_api.py` in root directory (port 5001)
+3. **Check API URL**: The frontend should use `http://localhost:5001` in development mode
+4. **Fallback Working**: Even if API fails, the app should load static demo data from `/demo-data.json`
+
 ### GLPK Solver Not Found
 ```bash
 # Verify installation
@@ -199,7 +295,20 @@ python -c "from pyomo.opt import SolverFactory; print(SolverFactory('glpk').vers
 ```
 
 ### Port Already in Use
-If the default ports are occupied, the servers will automatically try alternative ports. Check the terminal output for the actual URL.
+
+**macOS Port 5000 Issue**: macOS uses port 5000 for AirPlay Receiver by default.
+
+**Solution**: The demo API uses port 5001 to avoid conflicts. If you still get port errors:
+```bash
+# Check what's using the port
+lsof -i :5001
+
+# Kill the process if needed
+kill -9 <PID>
+
+# Or disable AirPlay Receiver:
+# System Preferences → General → AirDrop & Handoff → Uncheck "AirPlay Receiver"
+```
 
 ### Frontend Build Errors
 ```bash
@@ -211,6 +320,16 @@ npm install
 
 ### Optimization Fails
 Ensure GLPK is properly installed and accessible. The model requires a working linear programming solver to function.
+
+### API Returns 404 on Vercel
+
+**Problem**: API endpoints return 404 on Vercel deployment.
+
+**Solution**:
+1. Verify `vercel.json` has correct rewrites configuration
+2. Check that `api/index.py` exists with `handler = app` export
+3. Ensure `api/requirements.txt` includes Flask and flask-cors
+4. Redeploy after making changes
 
 ## Contributing
 

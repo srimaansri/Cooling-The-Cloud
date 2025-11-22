@@ -1,0 +1,73 @@
+{
+  "optimize": {
+    "success": true,
+    "results": {
+      "summary": {
+        "total_cost": 172500.50,
+        "electricity_cost": 132800.25,
+        "water_cost": 39700.25,
+        "total_savings": 15250.75,
+        "baseline_cost": 187751.25,
+        "optimization_percentage": 8.12
+      },
+      "savings": {
+        "cost_reduction": 15250.75,
+        "peak_load_shifted_mw": 18.5,
+        "water_saved_gallons": 8500,
+        "efficiency_improvement_percent": 12.3
+      },
+      "environmental": {
+        "water_usage_gallons": 118500,
+        "carbon_reduction_tons": 45.2,
+        "renewable_energy_percent": 35.5
+      },
+      "hourly_data": [
+        {"hour": 0, "temperature": 75.2, "load_mw": 950, "price": 0.03, "cooling_mode": "electric", "water_usage": 3200},
+        {"hour": 1, "temperature": 74.8, "load_mw": 920, "price": 0.03, "cooling_mode": "electric", "water_usage": 3100},
+        {"hour": 2, "temperature": 74.5, "load_mw": 900, "price": 0.03, "cooling_mode": "electric", "water_usage": 3000},
+        {"hour": 3, "temperature": 74.0, "load_mw": 880, "price": 0.03, "cooling_mode": "electric", "water_usage": 2950},
+        {"hour": 4, "temperature": 73.8, "load_mw": 870, "price": 0.03, "cooling_mode": "electric", "water_usage": 2900},
+        {"hour": 5, "temperature": 73.5, "load_mw": 860, "price": 0.03, "cooling_mode": "electric", "water_usage": 2850},
+        {"hour": 6, "temperature": 75.0, "load_mw": 900, "price": 0.03, "cooling_mode": "electric", "water_usage": 3000},
+        {"hour": 7, "temperature": 78.5, "load_mw": 1050, "price": 0.05, "cooling_mode": "electric", "water_usage": 3500},
+        {"hour": 8, "temperature": 82.0, "load_mw": 1200, "price": 0.05, "cooling_mode": "hybrid", "water_usage": 4200},
+        {"hour": 9, "temperature": 86.5, "load_mw": 1350, "price": 0.05, "cooling_mode": "hybrid", "water_usage": 4800},
+        {"hour": 10, "temperature": 91.0, "load_mw": 1500, "price": 0.05, "cooling_mode": "hybrid", "water_usage": 5500},
+        {"hour": 11, "temperature": 95.5, "load_mw": 1650, "price": 0.05, "cooling_mode": "water", "water_usage": 6200},
+        {"hour": 12, "temperature": 100.0, "load_mw": 1700, "price": 0.05, "cooling_mode": "water", "water_usage": 6800},
+        {"hour": 13, "temperature": 104.5, "load_mw": 1750, "price": 0.05, "cooling_mode": "water", "water_usage": 7400},
+        {"hour": 14, "temperature": 109.0, "load_mw": 1800, "price": 0.05, "cooling_mode": "water", "water_usage": 8000},
+        {"hour": 15, "temperature": 113.5, "load_mw": 1200, "price": 0.15, "cooling_mode": "water", "water_usage": 8500},
+        {"hour": 16, "temperature": 118.0, "load_mw": 1150, "price": 0.15, "cooling_mode": "water", "water_usage": 8800},
+        {"hour": 17, "temperature": 116.5, "load_mw": 1100, "price": 0.15, "cooling_mode": "water", "water_usage": 8600},
+        {"hour": 18, "temperature": 115.0, "load_mw": 1050, "price": 0.15, "cooling_mode": "water", "water_usage": 8400},
+        {"hour": 19, "temperature": 110.0, "load_mw": 1000, "price": 0.15, "cooling_mode": "water", "water_usage": 8000},
+        {"hour": 20, "temperature": 105.0, "load_mw": 950, "price": 0.15, "cooling_mode": "water", "water_usage": 7500},
+        {"hour": 21, "temperature": 95.0, "load_mw": 1100, "price": 0.05, "cooling_mode": "hybrid", "water_usage": 6500},
+        {"hour": 22, "temperature": 85.0, "load_mw": 1000, "price": 0.03, "cooling_mode": "hybrid", "water_usage": 5000},
+        {"hour": 23, "temperature": 80.0, "load_mw": 950, "price": 0.03, "cooling_mode": "electric", "water_usage": 3800}
+      ],
+      "metadata": {
+        "source": "static-demo",
+        "capacity_mw": 2000,
+        "generated_at": "2025-11-21T00:00:00Z"
+      }
+    }
+  },
+  "stats": {
+    "success": true,
+    "stats": {
+      "total_capacity_mw": 2000,
+      "active_servers": 8450,
+      "total_servers": 10000,
+      "current_load_mw": 1650,
+      "efficiency_rating": 95.2,
+      "uptime_percentage": 99.98,
+      "avg_temperature_f": 92.5,
+      "water_usage_gallons": 125000,
+      "current_cooling_mode": "hybrid",
+      "peak_demand_today_mw": 1850,
+      "off_peak_utilization": 72.3
+    }
+  }
+}

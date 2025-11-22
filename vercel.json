@@ -2,6 +2,11 @@
   "buildCommand": "cd cooling-cloud-react && npm install && npm run build",
   "outputDirectory": "cooling-cloud-react/dist",
   "framework": "vite",
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.9"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
