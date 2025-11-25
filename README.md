@@ -187,8 +187,12 @@ Cooling-The-Cloud/
 ├── data/                       # Sample data files
 ├── api_server.py               # Full Flask REST API (with Supabase)
 ├── run_local_api.py            # Local development API server
+├── tests/                      # Test files
+│   ├── test_linear.py          # Optimization tests
+│   ├── test_integration.py     # Integration tests
+│   ├── test_production_system.py # Production system tests
+│   └── test_optimizer_scaling.py # Scaling tests
 ├── main.py                     # CLI optimizer
-├── test_linear.py              # Optimization tests
 ├── vercel.json                 # Vercel deployment config
 └── requirements.txt            # Python dependencies
 ```
@@ -210,7 +214,7 @@ python main.py \
 
 ### Test the Optimization Engine
 ```bash
-python test_linear.py
+python tests/test_linear.py
 ```
 
 ### Access the Interactive Dashboard
