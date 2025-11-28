@@ -1,8 +1,20 @@
 # Cooling the Cloud
 
+> **AI-powered optimization that cuts Arizona data center costs by 11% while saving millions of gallons of water annually.**
+
+![Cooling the Cloud - Hero](Pics/01-hero-landing.png)
+
 ## Overview
 
 Arizona data centers face a critical challenge: extreme heat drives up cooling costs while the state battles severe water scarcity. During peak hours (3-8 PM), electricity prices surge 5x while temperatures exceed 115°F, forcing operators to choose between expensive electric cooling or water-intensive evaporative systems. Our optimization engine solves this problem by intelligently shifting computational loads to off-peak hours and dynamically switching between cooling modes, reducing operating costs by 12.6% while conserving millions of gallons of water annually.
+
+### The Challenge
+
+![Arizona Data Center Crisis](Pics/02-problem-challenge.png)
+
+### Real Impact
+
+![Proven Results and Savings](Pics/03-impact-results.png)
 
 ## Tech Stack
 
@@ -102,9 +114,9 @@ Frontend runs on **http://localhost:3000**
 **Terminal 2: Start the Backend API**
 ```bash
 # From the root directory
-python3 run_local_api.py
+python api_server.py
 ```
-Backend API runs on **http://localhost:5001**
+Backend API runs on **http://localhost:5000**
 
 The application will automatically use realistic demo data for Phoenix data centers. No API keys or database setup required.
 
@@ -184,9 +196,14 @@ Cooling-The-Cloud/
 ├── api/                        # Vercel serverless API
 │   ├── index.py                # Demo API endpoints (no DB required)
 │   └── requirements.txt        # API dependencies
-├── data/                       # Sample data files
-├── api_server.py               # Full Flask REST API (with Supabase)
-├── run_local_api.py            # Local development API server
+├── scripts/                    # Data fetching and utility scripts
+│   ├── fetch_eia.py            # EIA electricity data fetcher
+│   ├── fetch_prices.py         # Price data fetcher
+│   └── dev/                    # Developer utilities
+│       ├── explore_supabase_data.py
+│       └── check_database_schema.py
+├── data/                       # Data interfaces and storage
+├── api_server.py               # Flask REST API server
 ├── tests/                      # Test files
 │   ├── test_linear.py          # Optimization tests
 │   ├── test_integration.py     # Integration tests
@@ -223,19 +240,19 @@ Open the React frontend and navigate to the "Live Demo" page for real-time param
 ### Test API Endpoints
 ```bash
 # Health check
-curl http://localhost:5001/api/health
+curl http://localhost:5000/api/health
 
 # Get system stats
-curl http://localhost:5001/api/stats
+curl http://localhost:5000/api/stats
 
 # Run optimization
-curl -X POST http://localhost:5001/api/optimize
+curl -X POST http://localhost:5000/api/optimize
 
 # Get optimization history
-curl http://localhost:5001/api/history?limit=10
+curl http://localhost:5000/api/history?limit=10
 
 # Get real-time data
-curl http://localhost:5001/api/real-time-data
+curl http://localhost:5000/api/real-time-data
 ```
 
 ## Available API Endpoints
@@ -254,6 +271,12 @@ The demo API (`api/index.py`) provides the following endpoints with realistic Ph
 | `/api/real-time-data` | GET | Real-time monitoring data (24h) |
 
 All endpoints return realistic demo data without requiring database connections or API keys.
+
+## Live Dashboard
+
+![Real-Time Monitoring Dashboard](Pics/07-dashboard-realtime.png)
+
+The dashboard provides real-time monitoring of Arizona electricity grid data, temperature profiles, and pricing—connected directly to Supabase for live updates.
 
 ## Key Features
 
@@ -285,8 +308,8 @@ Based on a 2000MW Arizona data center:
 1. **Vercel Deployment**: Make sure you've pushed the latest changes including `api/index.py`, `vercel.json`, and `demo-data.json`
 2. **Local Development**: Ensure both servers are running:
    - Frontend: `npm run dev` in `cooling-cloud-react/` (port 3000)
-   - Backend: `python3 run_local_api.py` in root directory (port 5001)
-3. **Check API URL**: The frontend should use `http://localhost:5001` in development mode
+   - Backend: `python api_server.py` in root directory (port 5000)
+3. **Check API URL**: The frontend should use `http://localhost:5000` in development mode
 4. **Fallback Working**: Even if API fails, the app should load static demo data from `/demo-data.json`
 
 ### GLPK Solver Not Found
@@ -302,10 +325,10 @@ python -c "from pyomo.opt import SolverFactory; print(SolverFactory('glpk').vers
 
 **macOS Port 5000 Issue**: macOS uses port 5000 for AirPlay Receiver by default.
 
-**Solution**: The demo API uses port 5001 to avoid conflicts. If you still get port errors:
+**Solution**: Disable AirPlay Receiver or use a different port:
 ```bash
 # Check what's using the port
-lsof -i :5001
+lsof -i :5000
 
 # Kill the process if needed
 kill -9 <PID>
