@@ -6,6 +6,9 @@
 
 > 🏆 **2nd Place — IISE Think.Solve.Hack 2025** | AI-powered optimization that cuts Arizona data center costs by 12.6% while saving millions of gallons of water annually.
 
+### TL;DR
+Full-stack optimization system (React + Flask + Pyomo) that reduces data center cooling costs by **12.6%** and saves **467M gallons of water/year** — with live dashboard and real EIA/NOAA data integration.
+
 ![Cooling the Cloud - Hero](Pics/01-hero-landing.png)
 
 ### Quick Start (No API Keys Required)
@@ -384,9 +387,9 @@ MIT License - See LICENSE file for details
 
 ## Team
 
+- **Srimaan Sri Edara** - [edarasrimaansri@gmail.com](mailto:edarasrimaansri@gmail.com)
 - **Aryan Srivastava** - [aryanas5426@gmail.com](mailto:aryanas5426@gmail.com)
 - **Taimur Adam** - [taimur.adam1@gmail.com](mailto:taimur.adam1@gmail.com)
-- **Srimaan Sri Edara** - [edarasrimaansri@gmail.com](mailto:edarasrimaansri@gmail.com)
 
 ## Acknowledgments
 
