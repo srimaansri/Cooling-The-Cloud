@@ -370,7 +370,7 @@ MIT License - See LICENSE file for details
 
 - **Aryan Srivastava** - [aryanas5426@gmail.com](mailto:aryanas5426@gmail.com)
 - **Taimur Adam** - [taimur.adam1@gmail.com](mailto:taimur.adam1@gmail.com)
-- **Edara Srimaan Sri** - [edarasrimaansri@gmail.com](mailto:edarasrimaansri@gmail.com)
+- **Srimaan Sri Edara** - [edarasrimaansri@gmail.com](mailto:edarasrimaansri@gmail.com)
 
 ## Acknowledgments
 
