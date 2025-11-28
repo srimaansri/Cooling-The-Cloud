@@ -2,8 +2,9 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Hackathon 2nd Place](https://img.shields.io/badge/IISE%20Hackathon-2nd%20Place-blueviolet)](https://www.iise.org/)
 
-> **AI-powered optimization that cuts Arizona data center costs by 12.6% while saving millions of gallons of water annually.**
+> 🏆 **2nd Place — IISE Think.Solve.Hack 2025** | AI-powered optimization that cuts Arizona data center costs by 12.6% while saving millions of gallons of water annually.
 
 ![Cooling the Cloud - Hero](Pics/01-hero-landing.png)
 
@@ -51,6 +52,8 @@ Arizona data centers face a critical challenge: extreme heat drives up cooling c
 - **Supabase (PostgreSQL)** - Data storage and real-time queries
 - **EIA API** - U.S. Energy Information Administration grid demand data
 - **NOAA API** - National weather data for Phoenix Sky Harbor
+
+> 📐 **[View Full System Architecture](docs/ARCHITECTURE.md)** — Data flow diagrams, API architecture, and deployment options.
 
 ## Environment Setup
 
