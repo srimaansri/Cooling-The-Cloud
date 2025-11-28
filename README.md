@@ -1,8 +1,21 @@
 # Cooling the Cloud
 
-> **AI-powered optimization that cuts Arizona data center costs by 11% while saving millions of gallons of water annually.**
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+
+> **AI-powered optimization that cuts Arizona data center costs by 12.6% while saving millions of gallons of water annually.**
 
 ![Cooling the Cloud - Hero](Pics/01-hero-landing.png)
+
+### Quick Start (No API Keys Required)
+```bash
+# Terminal 1: Frontend
+cd cooling-cloud-react && npm install && npm run dev
+
+# Terminal 2: Backend
+python api_server.py
+```
+Open **http://localhost:3000** → Click "Launch Demo"
 
 ## Overview
 
