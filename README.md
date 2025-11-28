@@ -9,6 +9,8 @@
 ### TL;DR
 Full-stack optimization system (React + Flask + Pyomo) that reduces data center cooling costs by **12.6%** and saves **467M gallons of water/year** — with live dashboard and real EIA/NOAA data integration.
 
+> *Originally developed at [Automynx/Cooling-The-Cloud](https://github.com/Automynx/Cooling-The-Cloud) as a team project for IISE Think.Solve.Hack 2025.*
+
 ![Cooling the Cloud - Hero](Pics/01-hero-landing.png)
 
 ### Quick Start (No API Keys Required)
@@ -75,7 +77,7 @@ Install the following before proceeding:
 
 #### 1. Clone the Repository
 ```bash
-git clone https://github.com/Automynx/Cooling-The-Cloud.git
+git clone https://github.com/srimaansri/Cooling-The-Cloud.git
 cd Cooling-The-Cloud
 ```
 
@@ -385,6 +387,16 @@ This project was developed for the 2025 IISE Hackathon under the theme "Electric
 
 MIT License - See LICENSE file for details
 
+## My Contributions
+
+- Built the complete **React frontend** with interactive dashboard and real-time visualizations
+- Implemented the **linear optimization model** using Pyomo with HiGHS/GLPK solvers
+- Designed and integrated **Supabase/PostgreSQL** database layer
+- Created the **Flask REST API** with 8 endpoints for optimization and data retrieval
+- Configured **Vercel deployment** with serverless Python backend
+- Set up **GitHub Actions CI/CD** for automated data fetching
+- Wrote comprehensive **documentation** (API guide, architecture diagrams)
+
 ## Team
 
 - **Srimaan Sri Edara** - [edarasrimaansri@gmail.com](mailto:edarasrimaansri@gmail.com)
@@ -400,6 +412,7 @@ MIT License - See LICENSE file for details
 
 ## Links
 
-- **GitHub Repository**: [Cooling-The-Cloud](https://github.com/Automynx/Cooling-The-Cloud)
+- **GitHub Repository**: [srimaansri/Cooling-The-Cloud](https://github.com/srimaansri/Cooling-The-Cloud)
+- **Original Team Repo**: [Automynx/Cooling-The-Cloud](https://github.com/Automynx/Cooling-The-Cloud)
 - **Live Demo**: [Deployed Application](https://cooling-the-cloud.vercel.app)
 - **Documentation**: See `CLAUDE.md` for detailed project architecture
