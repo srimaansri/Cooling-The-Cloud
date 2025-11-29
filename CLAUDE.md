@@ -30,9 +30,6 @@ The system optimizes a 50MW Phoenix data center by:
 
 ### Frontend Applications
 - **`cooling-cloud-react/`** - React 18 + Vite frontend with TailwindCSS
-- **`streamlit_app.py`** - Interactive web dashboard for parameter tuning
-- **`streamlit_app_advanced.py`** - Advanced dashboard with database integration
-- **`streamlit_app_clean.py`** - Simplified version for quick demos
 
 ### Data Layer
 - **`data/supabase_interface.py`** - Supabase/PostgreSQL database integration
@@ -98,23 +95,11 @@ python main.py --demo --solver gurobi    # If commercial license available
 
 ### Running Web Interfaces
 
-#### Streamlit Dashboards
-```bash
-# Basic interactive dashboard
-streamlit run streamlit_app.py
-
-# Advanced dashboard with database
-streamlit run streamlit_app_advanced.py
-
-# Clean/simplified version
-streamlit run streamlit_app_clean.py
-```
-
 #### React Frontend
 ```bash
 cd cooling-cloud-react
 npm install
-npm run dev     # Development server at localhost:5173
+npm run dev     # Development server at localhost:3000
 npm run build   # Production build
 npm run preview # Preview production build
 ```
@@ -123,9 +108,6 @@ npm run preview # Preview production build
 ```bash
 # Local development
 python api_server.py  # Runs on port 5000
-
-# With custom port
-python run_local_api.py
 ```
 
 ### Data Operations
@@ -143,10 +125,10 @@ python scripts/fetch_water_index.py
 python data/api/store_to_postgres.py
 
 # Explore Supabase data
-python explore_supabase_data.py
+python scripts/dev/explore_supabase_data.py
 
 # Check database schema
-python check_database_schema.py
+python scripts/dev/check_database_schema.py
 ```
 
 ### Visualization
@@ -211,9 +193,8 @@ Note: Demo mode works without any API keys using synthetic Phoenix data.
 
 - Core optimization models: Complete
 - Data interfaces: Complete
-- Flask API: Complete with 7 endpoints
-- Streamlit dashboards: 3 versions available
-- React frontend: Landing page and basic routing implemented
+- Flask API: Complete with 8 endpoints
+- React frontend: Full dashboard with real-time monitoring
 - Database integration: Supabase/PostgreSQL ready
 - Real data integration: Scripts ready (requires API keys)
 - GitHub Actions: Daily data fetch workflow configured
